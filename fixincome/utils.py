@@ -119,17 +119,19 @@ def future_value(rate: float, term: int, pmt: float, pv: float = 0.0, time: int 
     return fv
 
 
-def effective_annual_rate(rate: float, nper: int) -> float:
-    """Calculate the effective annual interest rate
+def effective_annual_rate(rate: float, t: float = 1, time_unit: str = "d") -> float:
+    """Convert holding period yield to effective annual rate
 
     Args:
-        rate (float): stated annual rate/m
-        nper (int): the number of compounding periods per year
+        rate (float): Yield during holding period
+        t (float): holding period
+        time_unit(str): time unit, can be days("d"), months("m") and quarters("q"), the default is days
 
     Returns:
-        float: effective annual rate(EAR)
+        float: effective annual rate
     """
-    return pow(1+rate, nper) - 1
+    tu = {"d": 365, "m": 12, "q": 4}
+    return pow(1+rate, tu[time_unit]/t) - 1
 
 
 def discount_rate(pv: float, pmt: float, nper: int, guess: float = 0.1) -> float:
@@ -160,3 +162,20 @@ def holding_period_yield(p1: float, p0: float, d: float = 0) -> float:
         float: holding period yield(HPY)
     """
     return (p1 + d - p0) / p0
+
+
+def hpy_to_ear(p1: float, p0: float, t: float, d: float = 0, time_unit: str = "d") -> float:
+    """Convert holding period yield to effective annual rate
+
+    Args:
+        p1 (float): price received for instrument at maturity
+        p0 (float): initial price of instrument
+        t (int): holding period
+        d (float): interest payment
+        time_unit(str): time unit, can be days("d"), months("m") and quarters("q"), the default is days
+
+    Returns:
+        float: effective annual rate
+    """
+    hpy = (p1 + d - p0) / p0
+    return effective_annual_rate(hpy, t, time_unit)

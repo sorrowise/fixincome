@@ -1,4 +1,3 @@
-from dis import dis
 from fixincome import utils as ut
 
 
@@ -41,8 +40,9 @@ def test_future_value():
 
 
 def test_effective_annual_rate():
-    assert almost_equal(ut.effective_annual_rate(0.03, 4), 0.1255)
-    assert almost_equal(ut.effective_annual_rate(0.005, 12), 0.06168)
+    assert almost_equal(ut.effective_annual_rate(0.03, 1, "q"), 0.1255)
+    assert almost_equal(ut.effective_annual_rate(0.005, 1, "m"), 0.06168)
+    assert almost_equal(ut.effective_annual_rate(0.06/365, 1), 0.06183)
 
 
 def test_discount_rate():
@@ -51,3 +51,7 @@ def test_discount_rate():
 
 def test_holding_period_yield():
     assert almost_equal(ut.holding_period_yield(100000, 98500), 0.015228)
+
+
+def test_hpy_to_ear():
+    assert almost_equal(ut.hpy_to_ear(100000, 98500, 120), 0.047042)
