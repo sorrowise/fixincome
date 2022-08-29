@@ -55,3 +55,10 @@ def test_holding_period_yield():
 
 def test_hpy_to_ear():
     assert almost_equal(ut.hpy_to_ear(100000, 98500, 120), 0.047042)
+
+
+def test_bond_price():
+    assert almost_equal(ut.bond_price(0.1, 10, 1000, 0.1), 1000)
+    assert almost_equal(ut.bond_price(0.08, 10, 1000, 0.1), 1134.2016)
+    assert almost_equal(ut.bond_price(0.12, 10, 1000, 0.1), 886.9955)
+    assert almost_equal(ut.bond_price(0.08, 10, 1000, 0.1, "s"), 1135.90326)

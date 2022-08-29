@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "fixincome"
 version = "0.1.0"
-description = ""
-authors = ["metaquant <576422965@qq.com>"]
+description = "Analysis of fixed income securities using python language."
+authors = ["metaquant <sorrowise@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"

@@ -1,6 +1,7 @@
 """This module is a collection of helper functions.
 """
 
+from lib2to3.pygram import pattern_grammar
 from typing import List
 
 import numpy as np
@@ -179,3 +180,10 @@ def hpy_to_ear(p1: float, p0: float, t: float, d: float = 0, time_unit: str = "d
     """
     hpy = (p1 + d - p0) / p0
     return effective_annual_rate(hpy, t, time_unit)
+
+
+def bond_price(ytm: float, nper: float, par_value: float, par_rate: float, time_unit: str = "y") -> float:
+    rates = {"y": 1, "s": 2, "q": 4, "m": 12, "d": 365}
+    res = present_value(
+        par_value*par_rate/rates[time_unit], ytm/rates[time_unit], nper*rates[time_unit], par_value)
+    return res
