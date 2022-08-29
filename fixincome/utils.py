@@ -175,7 +175,7 @@ def hpy_to_ear(p1: float, p0: float, t: float, d: float = 0, time_unit: str = "d
         time_unit(str): time unit, can be days("d"), months("m") and quarters("q"), the default is days
 
     Returns:
-        float: effective annual rate
+        float: effective annual rate of return
     """
     hpy = (p1 + d - p0) / p0
     return effective_annual_rate(hpy, t, time_unit)
