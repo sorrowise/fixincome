@@ -13,7 +13,7 @@ def geometric_series_sum(a1: float, q: float, n: float) -> float:
     Args:
         a1 (float): first item
         q (float): common ratio
-        n (int): number of items
+        n (float): number of items
 
     Returns:
         float: sum of geometric numbers
@@ -117,3 +117,46 @@ def future_value(rate: float, term: int, pmt: float, pv: float = 0.0, time: int 
     """
     fv = pmt*future_value_factor(rate, term, time) + pv*pow(1+rate, term)
     return fv
+
+
+def effective_annual_rate(rate: float, nper: int) -> float:
+    """Calculate the effective annual interest rate
+
+    Args:
+        rate (float): stated annual rate/m
+        nper (int): the number of compounding periods per year
+
+    Returns:
+        float: effective annual rate(EAR)
+    """
+    return pow(1+rate, nper) - 1
+
+
+def discount_rate(pv: float, pmt: float, nper: int, guess: float = 0.1) -> float:
+    """Calculate the discount rate for an annuity
+
+    Args:
+        pv (float): present value of the annuity
+        pmt (float): Annuity Payments Each Period
+        nper (int): Number of annuity payments
+        guess (float, optional): the given interest rate guess. Defaults to 0.1.
+
+    Returns:
+        float: discount rate
+    """
+    def func(r): return present_value(pmt, r, nper) - pv
+    return fsolve(func, guess)[0]
+
+
+def holding_period_yield(p1: float, p0: float, d: float = 0) -> float:
+    """Calculate the holding period return
+
+    Args:
+        p1 (float): price received for instrument at maturity
+        p0 (float): initial price of instrument
+        d (float): interest payment
+
+    Returns:
+        float: holding period yield(HPY)
+    """
+    return (p1 + d - p0) / p0
