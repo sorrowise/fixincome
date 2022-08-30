@@ -1,6 +1,7 @@
 """This module is a collection of helper functions.
 """
 
+from datetime import datetime
 from typing import List
 
 import numpy as np
@@ -179,3 +180,35 @@ def hpy_to_ear(p1: float, p0: float, t: float, d: float = 0, time_unit: str = "d
     """
     hpy = (p1 + d - p0) / p0
     return effective_annual_rate(hpy, t, time_unit)
+
+
+def xnpv(rate: float, dates: List[str], cashflows: List[float]) -> float:
+    """Returns the net present value for the cash flow plan
+
+    Args:
+        rate(float): annual discount rate
+        dates (List[str]): The payment date of each cash flow, input as a string in the form of "20060101"
+        cashflows (List[float]): Cash flow for each payment date
+
+    Returns:
+        float: net present value
+    """
+    dates = [datetime.strptime(d, "%Y%m%d") for d in dates]
+    delta = [(d - dates[0]).days for d in dates[1:]]
+    r = pow(1+rate, 1/365) - 1
+    npv = sum(c/pow(1+r, d)
+              for c, d in zip(cashflows[1:], delta)) + cashflows[0]
+    return npv
+
+
+def xirr(dates: List[str], cashflows: List[float]) -> float:
+    """Returns the internal rate of return for the cash flow plan
+
+    Args:
+        dates (List[str]): The payment date of each cash flow, input as a string in the form of "20060101"
+        cashflows (List[float]): Cash flow for each payment date
+
+    Returns:
+        float: internal rate of return
+    """
+    return fsolve(lambda r: xnpv(r, dates, cashflows), 0)[0]

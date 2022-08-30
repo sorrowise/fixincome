@@ -57,8 +57,13 @@ def test_hpy_to_ear():
     assert almost_equal(ut.hpy_to_ear(100000, 98500, 120), 0.047042)
 
 
-def test_bond_price():
-    assert almost_equal(ut.bond_price(0.1, 10, 1000, 0.1), 1000)
-    assert almost_equal(ut.bond_price(0.08, 10, 1000, 0.1), 1134.2016)
-    assert almost_equal(ut.bond_price(0.12, 10, 1000, 0.1), 886.9955)
-    assert almost_equal(ut.bond_price(0.08, 10, 1000, 0.1, "s"), 1135.90326)
+def test_npv():
+    ds = ['20060101', '20070303', '20070704', '20081012', '20091225']
+    cf = [-1000, 100, 195, 350, 800]
+    assert almost_equal(ut.xnpv(0.12, ds, cf), 16.80083062214726)
+
+
+def test_xirr():
+    dates = ['20060101', '20060303', '20060704', '20061012', '20061225']
+    cashflows = [-1000, 150, 100, 50, 1000]
+    assert almost_equal(ut.xirr(dates, cashflows), 0.37188269789)
