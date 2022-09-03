@@ -135,7 +135,7 @@ def effective_annual_rate(rate: float, t: float = 1, time_unit: str = "d") -> fl
     return pow(1+rate, tu[time_unit]/t) - 1
 
 
-def discount_rate(pv: float, pmt: float, nper: int, guess: float = 0.1) -> float:
+def discount_rate(pv: float, pmt: float, nper: int, fv: float = 0, guess: float = 0.1) -> float:
     """Calculate the discount rate for an annuity
 
     Args:
@@ -147,7 +147,7 @@ def discount_rate(pv: float, pmt: float, nper: int, guess: float = 0.1) -> float
     Returns:
         float: discount rate
     """
-    def func(r): return present_value(pmt, r, nper) - pv
+    def func(r): return present_value(pmt, r, nper, fv) - pv
     return fsolve(func, guess)[0]
 
 
@@ -212,3 +212,58 @@ def xirr(dates: List[str], cashflows: List[float]) -> float:
         float: internal rate of return
     """
     return fsolve(lambda r: xnpv(r, dates, cashflows), 0)[0]
+
+
+def macaulay_duration(price: float, ytm: float, par_value: float, par_rate: float, term: int) -> float:
+    """Calculate Macaulay Duration
+
+    Args:
+        price (float): the current price of the bond
+        ytm (float): bond yield to maturity
+        par_value (float): face value of bond
+        par_rate (float): bond coupon
+        term (int): the maturity of the bond
+
+    Returns:
+        float: Macaulay duration
+    """
+    pmts = [par_value*par_rate] * (term - 1) + [par_value*par_rate + par_value]
+    return sum((t+1) * pmt/pow(1+ytm, t+1) for t, pmt in enumerate(pmts))/price
+
+
+def modified_duration(price: float, ytm: float, par_value: float, par_rate: float, term: int) -> float:
+    """Modified duration is calculated as Macaulay duration divided by one plus the bond's yield to
+       maturity.Modified duration provides an approximate percentage in a bond's price for a 1% change
+       in yield to maturity.
+
+
+    Args:
+        price (float): the current price of the bond
+        ytm (float): bond yield to maturity
+        par_value (float): face value of bond
+        par_rate (float): bond coupon
+        term (int): the maturity of the bond
+
+    Returns:
+        float: modified duration
+    """
+    return macaulay_duration(price, ytm, par_value, par_rate, term)/(1+ytm)
+
+
+def pvbp(price: float, coupon: float, term: int) -> float:
+    """calculate the price value of basis point(pvbp)
+       price value of a basis point is the money change in the full price(In hundred dollars) of 
+       a bond when its YTM change by one basis point, or 0.01% 
+
+    Args:
+        price (float): the current price of the bond
+        coupon (float): Coupon, in hundred dollars
+        term (int): the maturity of the bond
+
+    Returns:
+        float: price value of basis point(pvbp)
+    """
+    ytm = discount_rate(price, coupon, term, 100)
+    v_plus = present_value(coupon, ytm-0.0001, term, 100)
+    v_minus = present_value(coupon, ytm+0.0001, term, 100)
+    return (v_plus-v_minus)/2

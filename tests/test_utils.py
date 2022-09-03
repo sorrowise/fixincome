@@ -67,3 +67,17 @@ def test_xirr():
     dates = ['20060101', '20060303', '20060704', '20061012', '20061225']
     cashflows = [-1000, 150, 100, 50, 1000]
     assert almost_equal(ut.xirr(dates, cashflows), 0.37188269789)
+
+
+def test_macaulay_duration():
+    assert almost_equal(ut.macaulay_duration(
+        1000, 0.05, 1000, 0.05, 4), 3.7232480293704775)
+
+
+def test_modified_duration():
+    assert almost_equal(ut.modified_duration(
+        1000, 0.05, 1000, 0.05, 4), 3.7232480293/1.05)
+
+
+def test_pvbp():
+    assert almost_equal(ut.pvbp(101.39, 6, 20), 0.1169594)
