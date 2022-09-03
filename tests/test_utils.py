@@ -81,3 +81,7 @@ def test_modified_duration():
 
 def test_pvbp():
     assert almost_equal(ut.pvbp(101.39, 6, 20), 0.1169594)
+
+
+def test_convexity():
+    assert almost_equal(ut.convexity(1000, 50, 4, 1000), 16.473834)

@@ -217,6 +217,11 @@ def xirr(dates: List[str], cashflows: List[float]) -> float:
 def macaulay_duration(price: float, ytm: float, par_value: float, par_rate: float, term: int) -> float:
     """Calculate Macaulay Duration
 
+       Macaulay duration is the weighted average of the time to receive the cash flows from a bond. 
+       It is measured in units of years. Macaulay duration tells the weighted average time that a bond 
+       needs to be held so that the total present value of the cash flows received is equal to the current
+       market price paid for the bond. It is often used in bond immunization strategies.
+
     Args:
         price (float): the current price of the bond
         ytm (float): bond yield to maturity
@@ -267,3 +272,22 @@ def pvbp(price: float, coupon: float, term: int) -> float:
     v_plus = present_value(coupon, ytm-0.0001, term, 100)
     v_minus = present_value(coupon, ytm+0.0001, term, 100)
     return (v_plus-v_minus)/2
+
+
+def convexity(price: float, coupon: float, term: int, face_value: float, delta: float = 0.0001) -> float:
+    """Calculate the convexity of a bond
+
+    Args:
+        price (float): he current price of the bond
+        coupon (float): bond coupons
+        term (int): the maturity of the bond
+        face_value (float): face value of the bond
+        delta (float, optional): change in yield to maturity. Defaults to 0.0001.
+
+    Returns:
+        float: he convexity of a bond
+    """
+    ytm = discount_rate(price, coupon, term, face_value)
+    v_plus = present_value(coupon, ytm-delta, term, face_value)
+    v_minus = present_value(coupon, ytm+delta, term, face_value)
+    return (v_minus+v_plus-2*price)/(delta*delta*price)
